@@ -194,7 +194,6 @@ def setShiftRegister(srvals):
 def set_output():
     """
     Activate triacs according to shift register state.
-    If using SIP with shift registers and active low relays, uncomment the line indicated below.
     """
 
     with gv.output_srvals_lock:
