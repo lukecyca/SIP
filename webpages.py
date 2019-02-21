@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+import six
+
 import os
 import re
 import time
@@ -104,7 +107,7 @@ class change_values(ProtectedPage):
 
     def GET(self):
         qdict = web.input()
-        print 'qdict: ', qdict
+        print('qdict: ', qdict)
         if 'rsn' in qdict and qdict['rsn'] == '1':
             stop_stations()
             raise web.seeother('/')
@@ -121,11 +124,18 @@ class change_values(ProtectedPage):
             stop_onrain()
         elif 'rd' in qdict and qdict['rd'] == '0':
             gv.sd['rdst'] = 0
-        for key in qdict.keys():
-            try:
-                gv.sd[key] = int(qdict[key])
-            except Exception:
-                pass
+        if six.PY2:
+            for key in qdict.keys():
+                try:
+                    gv.sd[key] = int(qdict[key])
+                except Exception:
+                    pass
+        else:
+            for key in list(qdict.keys()):    
+                try:
+                    gv.sd[key] = int(qdict[key])
+                except Exception:
+                    pass
         jsave(gv.sd, 'sd')
         report_value_change()
         raise web.seeother('/')  # Send browser back to home page
@@ -186,11 +196,10 @@ class change_options(ProtectedPage):
             gv.sd['htp'] = int(qdict['ohtp'])
             
         if 'oidd' in qdict:
-#             if qdict['oidd'] == 'on':
             idd_int = 1
         else:
             idd_int = 0
-        print "idd_int:, ", idd_int  
+        print("idd_int:, ", idd_int)  
         if idd_int != gv.sd['idd']:
             gv.sd['idd'] = idd_int
             self.update_prog_lists('idd')
@@ -461,7 +470,7 @@ class change_program(ProtectedPage):
         pnum = int(qdict['pid']) + 1  # program number
 #         cp = ast.literal_eval(qdict['v'])
         cp = json.loads(qdict['v'])
-        print "cp from wp line 464 < mp: ", cp
+        print("cp from wp line 464 < mp: ", cp)
         if cp['enabled'] == 0 and pnum == gv.pon:  # if disabled and program is running
             for i in range(len(gv.ps)):
                 if gv.ps[i][0] == pnum:
@@ -506,7 +515,7 @@ class enable_program(ProtectedPage):
 
     def GET(self):
         qdict = web.input()
-        print "qdict from enable_prog: ", qdict
+        print("qdict from enable_prog: ", qdict)
         gv.pd[int(qdict['pid'])]['enabled'] = int(qdict['enable'])
         jsave(gv.pd, 'programData')
         report_program_toggle()
@@ -526,7 +535,10 @@ class clear_log(ProtectedPage):
 
     def GET(self):
         with io.open('./data/log.json', 'w') as f:
-            f.write(u'')
+            if six.PY2:
+                f.write(u'')
+            else:
+                f.write('')
         raise web.seeother('/vl')
 
 
@@ -638,7 +650,10 @@ class api_log(ProtectedPage):
         qdict = web.input()
         thedate = qdict['date']
         # date parameter filters the log values returned; "yyyy-mm-dd" format
-        theday = datetime.date(*map(int, thedate.split('-')))
+        if six.PY2:
+            theday = datetime.date(*map(int, thedate.split('-')))
+        else:
+            theday = datetime.date(*list(map(int, thedate.split('-'))))
         prevday = theday - datetime.timedelta(days=1)
         prevdate = prevday.strftime('%Y-%m-%d')
 

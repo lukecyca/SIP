@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import collections
 import i18n
 import datetime
@@ -28,7 +30,7 @@ try:
         import pigpio
         pi = pigpio.pi()
 except ImportError:
-    print 'error importing GPIO pins into helpers'
+    print('error importing GPIO pins into helpers')
     pass
 
 try:
@@ -37,7 +39,7 @@ except ImportError:
     try:
         import simplejson as json
     except ImportError:
-        print _("Error: json module not found")
+        print(_("Error: json module not found"))
         sys.exit()
 
 
@@ -95,7 +97,7 @@ def reboot(wait=1, block=False):
             GPIO.cleanup()
         time.sleep(wait)
         try:
-            print _('Rebooting...')
+            print(_('Rebooting...'))
         except Exception:
             pass
         subprocess.Popen(['reboot'])
@@ -124,7 +126,7 @@ def poweroff(wait=1, block=False):
             GPIO.cleanup()
         time.sleep(wait)
         try:
-            print _('Powering off...')
+            print(_('Powering off...'))
         except Exception:
             pass
         subprocess.Popen(['poweroff'])
@@ -154,7 +156,7 @@ def restart(wait=1, block=False):
             GPIO.cleanup()
         time.sleep(wait)
         try:
-            print _('Restarting...')
+            print(_('Restarting...'))
         except Exception:
             pass
         gv.restarted = 0
@@ -393,25 +395,22 @@ def prog_match(prog):
             elif lt.tm_mday % 2 != 1:
                 return 0  
     this_minute = (lt.tm_hour * 60) + lt.tm_min  # Check time match
-#     print "this_minute: ", this_minute
     if (this_minute < prog['start_min'] 
         or this_minute >= prog['stop_min']       
-#         or prog['cycle_min'] == 0
         ):
         return 0
     if (prog['cycle_min'] == 0
         and (this_minute >= prog['start_min'])
         and (this_minute < prog['stop_min'])
         ):
-        print "##### Match 1 found #####"
-        print "start: ", prog['start_min']
-        print "stop: ", prog['stop_min']
-#         print 'this_minute: ', this_minute
+        print("##### Match 1 found #####")
+        print("start: ", prog['start_min'])
+        print("stop: ", prog['stop_min'])
         return 1  # Program matched        
     elif ((prog['cycle_min'] != 0
            and (this_minute - prog['start_min']) / prog['cycle_min']) * prog['cycle_min'] == this_minute - prog['start_min']        
           ):
-        print "##### Match 2 found #####"
+        print("##### Match 2 found #####")
         return 1  # Program matched
     return 0
 
@@ -574,7 +573,7 @@ def password_salt():
     @rtype: string
     @return: random value as 64 byte string.
     """
-    return "".join(chr(random.randint(33, 127)) for _ in xrange(64))
+    return "".join(chr(random.randint(33, 127)) for _ in range(64))
 
 
 def password_hash(password, salt):

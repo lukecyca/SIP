@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # encoding: utf-8
 
+import six
+
 import os
 import locale
 import gettext
@@ -47,7 +49,10 @@ curdir = os.path.abspath(os.path.dirname(__file__))
 # i18n directory.
 localedir = curdir + '/i18n'
 
-gettext.install('sip_messages', localedir, unicode=True)
+if six.PY2:
+    gettext.install('sip_messages', localedir, unicode=True)
+else:
+    gettext.install('sip_messages', localedir, string=True)
 
 sys_lang = get_system_lang()
 

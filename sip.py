@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import i18n
+from __future__ import print_function
+import six
 
+import i18n
 import subprocess
 import json
 import ast
@@ -40,7 +42,7 @@ gv.restarted = 1
 def timing_loop():
     """ ***** Main timing algorithm. Runs in a separate thread.***** """
     try:
-        print _('Starting timing loop') + '\n'
+        print(_('Starting timing loop') + '\n')
     except Exception:
         pass
     last_min = 0
@@ -230,11 +232,11 @@ if __name__ == '__main__':
     import plugins
 
     try:
-        print _('plugins loaded:')
+        print(_('plugins loaded:'))
     except Exception:
         pass
     for name in plugins.__all__:
-        print ' ', name
+        print(' ', name)
 
     gv.plugin_menu.sort(key=lambda entry: entry[0])
 
@@ -246,7 +248,10 @@ if __name__ == '__main__':
     except Exception:
         pass
     
-    thread.start_new_thread(timing_loop, ())
+    if six.PY2:
+        thread.start_new_thread(timing_loop, ())
+    else:
+        _thread.start_new_thread(timing_loop, ())
 
     if gv.use_gpio_pins:
         set_output()    
