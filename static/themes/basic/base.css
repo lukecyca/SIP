@@ -276,7 +276,6 @@ button.toggle.on {
 }
 button.toggle.on:hover {
 	color: #F7F1CD;
-	background-image: url('off.png');
 }
 button.toggle.off {
 	background-color: #7D1921;
@@ -288,7 +287,6 @@ button.toggle.off.choice {
 }
 button.toggle.off:hover {
 	color: #F7F1CD;
-	background-image: url('on.png');
 }
 button.toggle span.togglesep {
 	display: inline-block;
